@@ -14,7 +14,7 @@ from easydict import EasyDict as edict
 from lib.utils.utils import load_pretrain, cxy_wh_2_rect, get_axis_aligned_bbox, load_dataset, poly_iou
 
 from lib.eval_toolkit.pysot.datasets import VOTDataset
-from lib.eval_toolkit.pysot.evaluation import EAOBenchmark
+# from lib.eval_toolkit.pysot.evaluation import EAOBenchmark
 from lib.tracker.lighttrack import Lighttrack
 
 
@@ -113,6 +113,10 @@ def track(siam_tracker, siam_net, video, args):
 
                 location = cxy_wh_2_rect(state['target_pos'], state['target_sz'])
 
+                # x, y, w, h = [int(l) for l in location]
+
+                # cv2.rectangle(rgb_im, (x, y), (x + w, y + h), (0, 255, 0), 3)
+
                 b_overlap = poly_iou(gt[f], location) if 'VOT' in args.dataset else 1
                 if b_overlap > 0:
                     regions.append(location)
@@ -124,6 +128,12 @@ def track(siam_tracker, siam_net, video, args):
                 regions.append(0)
 
             toc += cv2.getTickCount() - tic
+
+            # cv2.imshow(video['name'], rgb_im)
+            # key = cv2.waitKey(0) & 0xFF
+            # if key == 27 or key == ord('q'):
+            #     break
+
 
     with open(result_path, "w") as fin:
         if 'VOT' in args.dataset:

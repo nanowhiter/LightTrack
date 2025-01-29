@@ -46,6 +46,7 @@ def track(siam_tracker, siam_net, video_path, args):
         ret, frame = cam.read()
         if ret is False:
             break
+        rgb_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
         cnt_frame += 1
         tic = cv2.getTickCount()
         if cnt_frame == start_frame:  # init
@@ -88,11 +89,11 @@ def track(siam_tracker, siam_net, video_path, args):
             target_pos = np.array([cx, cy])
             target_sz = np.array([w, h])
 
-            state = siam_tracker.init(frame, target_pos, target_sz, siam_net)  # init tracker
+            state = siam_tracker.init(rgb_frame, target_pos, target_sz, siam_net)  # init tracker
 
             
         else: # tracking
-            state = siam_tracker.track(state, frame)
+            state = siam_tracker.track(state, rgb_frame)
 
             location = cxy_wh_2_rect(state['target_pos'], state['target_sz'])
 
